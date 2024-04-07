@@ -6,7 +6,7 @@ const sqlite3 = require('sqlite3')
 const app = express()
 app.use(express.json())
 
-const dbpath = path.join(__dirname, 'cricketMatchDetails.db')
+const dbpath = path.join(__dirname, 'todoApplication.db')
 let db = null
 
 const initializeDbAndServer = async () => {
@@ -89,7 +89,7 @@ app.get('/todos/', async (request, response) => {
          `;
 
     }
-    data = await database.all(getTodosQuery);
+    data = await db.all(getTodosQuery);
     response.send(data)
 });
 
@@ -103,7 +103,7 @@ app.get('/todos/:todoId/', async (request, response) => {
     WHERE
      id = '${todoId}';
     `;
-    const todo = await database.get(getTodoQuery);
+    const todo = await db.get(getTodoQuery);
     response.send(todo)
 });
 
@@ -115,7 +115,7 @@ app.post('/todos/', async (request, response) => {
     VALUES
      (${id}, '${todo}', '${priority}', '${status}');
     `;
-    await database.run(postTodoQuery)
+    await db.run(postTodoQuery)
     response.send("Todo Successfully Added")
 });
 
@@ -142,7 +142,7 @@ app.put('/todos/:todoId/', async (request, response) => {
     WHERE
      id = ${todoId};
     `;
-    const previousTodo = await database.get(previousTodoQuery)
+    const previousTodo = await db.get(previousTodoQuery)
     const {
         todo = previousTodo.todo,
         priority = previousTodo.priority,
@@ -158,7 +158,7 @@ app.put('/todos/:todoId/', async (request, response) => {
     WHERE 
      id = ${todoId};
     `;
-    await database.run(updateTodoQuery)
+    await db.run(updateTodoQuery)
     response.send(`${updatedColoumn} Updated`)
 });
 
@@ -171,7 +171,7 @@ app.delete('/todos/:todoId/', async (request, response) =>{
     WHERE
      id = ${todoId};
     `;
-    await database.run(deleteQuery)
+    await db.run(deleteQuery)
     response.send("Todo Deleted");
 });
 
